@@ -5,9 +5,12 @@ import (
 )
 
 func main() {
+	_ = "breakpoint"
+	
 	fmt.Printf("playing with formatters.\n\n")
 	i := 47
-	p := &i // assigns p to the address of i
+	var p *int
+	p = &i // assigns p to the address of i
 
 	fmt.Printf("memory address (%%p) %p\n", p) // %p
 	fmt.Printf("types (%%T) %T\n", i) // %p
