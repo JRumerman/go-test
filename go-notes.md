@@ -145,8 +145,13 @@
 ### Maps
 * maps are key/value pairs
 
-
-
+### Functions as variables
+	- pass them around just like in JavaScript. Sweet! Something I recognize.
+	- they can be returned from another function. awesome! just like JS.
+	- they are assigned to variables
+	x := func (a, b int) int {
+		return a+b
+	}
 
 
 
