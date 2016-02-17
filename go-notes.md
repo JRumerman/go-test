@@ -103,7 +103,7 @@
 * godebug run x.go
 	- starts the debugger for x; stopping at the first breakpoint
 
-### Arrays and Slices
+### Arrays
 * Arrays are fixed sized structs. They are declared with a fixed size and that size value cannot be changed. They are not used directly very often, but are used as the storage mechanism for slices.
 	a := [2]int {1, 2}
 	b := [...]int {1,2}
@@ -111,6 +111,7 @@
 	c[0] = 1
 	c[1] = 2
 
+### Slices
 * Slices point to a portion (or all of an array). They are declared like arrays, but without the size component. Internally, they point to an array, have a length, and have a capacity. They are descriptor objects.
 	- ways to create slices
 		a := []int {1,2}
@@ -134,8 +135,15 @@
 	- arrays can't be grown and since they are the underlying storage mechanism of slices, slices can't be grown either. Instead we must make a new slice and copy the elements from the old to the new one.
 		- the new size of the slice is up to the situation. given the situation, we may want to double it, triple it, square it, etc.
 
+### Ranges
+* ranges allow for easy iteration over a slice or a map
+	for i, v := range m {
+		i == index
+		v == value
+	}
 
-
+### Maps
+* maps are key/value pairs
 
 
 
