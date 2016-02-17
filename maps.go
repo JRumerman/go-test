@@ -14,9 +14,9 @@ func main() {
 	PrintMap(m)
 
 	// declare directly inline
-	n := map[string]int {
-		"keri":39,
-		"howard":72,
+	n := map[string]int{
+		"keri":   39,
+		"howard": 72,
 	}
 
 	PrintMap(n)
@@ -26,7 +26,7 @@ func PrintMap(m map[string]int) {
 	fmt.Printf("%v\n", m)
 
 	// range over a map produces a key/value pair
-	for i,v:=range m {
+	for i, v := range m {
 		fmt.Printf("%v %v\n", i, v)
 	}
 }
