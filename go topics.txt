@@ -1,0 +1,60 @@
+go topics
+	eco system
+		what packages are available
+		publishing a new package to gen pop
+		publishing a new package for internal consumption
+ 		contributing to a package owned by some one else
+ 		documentation locations
+ 		packages distributed in default installation
+
+ 	interfaces
+ 		what are they used for
+ 		defining
+ 		implementing
+ 		testing / casting
+
+ 	error handling
+
+ 	testing
+ 		unit testing
+ 		test creation
+ 		scaffolding
+ 		automated integration tests
+
+ 	debugging
+ 		godebug
+ 		profiling
+
+ 	tools
+ 		gofmt
+ 		gofix
+ 		generate
+ 		godoc
+ 		cgo
+ 		go install
+ 		go build
+ 		go get
+ 		go test
+
+ 	streaming
+
+ 	pointers
+
+ 	concurrency
+	 	locks
+ 		channels
+ 		mutexes
+ 		defer
+ 		panic
+ 		recovery
+
+ 	type assertions and tests
+
+ 	steps to create a new go distributable
+ 		make files
+ 		scaffolding setup
+ 		folder setup
+ 		installing go
+ 		environment variables
+
+
