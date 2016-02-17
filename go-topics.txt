@@ -56,5 +56,3 @@ go topics
  		folder setup
  		installing go
  		environment variables
-
-

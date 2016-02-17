@@ -33,7 +33,7 @@ import (
 ```
 
 ### function definitions
-return multiple values from a single function (typeA, typeB)
+- return multiple values from a single function (typeA, typeB)
 ``` go
 func fn (x, y float64) (float64, int) {
 
@@ -49,6 +49,8 @@ func fn2 (x float64, y int) (a, b int) {
 	return
 }
 ```
+- pass a variable by value; default behavior `(v Vertex)`
+- pass a variable by reference; pass in a pointer `(v *Vertex)`
 
 ### variables
 - variables can be declared at the function level or the package level.
@@ -178,11 +180,93 @@ c[1] = 2
 		return a+b
 	}
 	```
+	-
+### Methods
+- Go does not have classes but you can still define methods on types. Methods are attached to a type using a special argument called the Receiver argument.
+- A receiver argument can be a value or can be a pointer. 
+	- Value
+		- Receives a copy of the receiver
+	- Pointer
+		- Receives a pointer to the receiver and therefore can modify the receiver directly
+- If a receiver argument method has a value or a pointer type specified, Go fixes incorrectly called methods such that the right one is calld.
+	- `(&v).Abs()`
+	- `v.Abs()`
+		- same thing regardless if the receiver is a pointer or a value.
+- For consistency, all methods on a given type should have pointer or value receivers. We shouldn't mix and match
 
-### Published packages
-	- go allows 
 
+``` go
+package main
 
+import (
+	"fmt"
+	"math"
+)
 
+type Vertex struct { 
+	x, y float64 
+}
 
+func (v Vertex) Distance (u Vertex) float64 {
+	return math.Sqrt(math.Pow((v.x - u.x), 2) + math.Pow((v.y - u.y), 2))
+}
 
+func main () {
+	a, b := Vertex {-2, -3 }, Vertex{-4, 4}
+	fmt.Println(a.Distance(b))
+}
+
+```
+
+### Interfaces
+- An interface is a type. 
+
+``` go
+type IAbs interface {
+	Abs() float64
+}
+```
+
+- interfaces are implemented implicitly. There is no code that says type X implements interface A. This means it is very easy to implement an interface
+
+``` go
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+type IAbs interface {
+	Abs() float64
+}
+
+type Vertex struct { 
+	X, Y float64 
+}
+
+type MyFloat float64
+
+func (v *Vertex) Abs () float64 {
+	return math.Sqrt(v.X*v.X + v.Y*v.Y)
+}
+
+func (f MyFloat) Abs() float64 {
+	if (f >= 0) {
+		return float64(f)
+	}
+
+	return float64(-f)
+}
+
+func main () {
+	var a IAbs
+	b, c := Vertex {-2, -3 }, MyFloat(-58.548)
+	a = &b
+	fmt.Println(a.Abs())
+	a = c
+	fmt.Println(a.Abs())
+	// a = b
+	// fmt.Println(a.Abs())
+}
+```
