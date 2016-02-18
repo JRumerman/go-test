@@ -31,11 +31,22 @@ func main () {
 	var a IAbs
 	b, c := Vertex {-2, -3 }, MyFloat(-58.548)
 	a = &b
-	AbsDescribe(a)
+	EmptyDescribe(a)
 	a = c
-	AbsDescribe(a)
+	EmptyDescribe(a)
+
+	var i interface {} = "string"
+	s := i.(string)
+	fmt.Printf("%s\n", s)
+
+	s, ok := i.(string)
+	fmt.Printf("Ok: %t, val: %s\n", ok, s)
+
+	f, ok := i.(float64)
+	fmt.Printf("Ok: %t, val: %f\n", ok, f)
 }
 
-func AbsDescribe (i IAbs) {
-	fmt.Printf("Abs Describe: (%v, %T)\n", i.Abs(), i)
+func EmptyDescribe (i interface{}) {
+	// can't call Abs here on i
+	fmt.Printf("Empty Describe: (%v, %T)\n", i, i)
 }

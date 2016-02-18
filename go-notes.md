@@ -161,12 +161,12 @@ c[1] = 2
 
 ### Ranges
 * ranges allow for easy iteration over a slice or a map
-	``` go
-	for i, v := range m {
-		i == index
-		v == value
-	}
-	```
+``` go
+for i, v := range m {
+	// i == index
+	// v == value
+}
+```
 
 ### Maps
 * maps are key/value pairs
@@ -175,12 +175,11 @@ c[1] = 2
 - pass them around just like in JavaScript. Sweet! Something I recognize.
 - they can be returned from another function. awesome! just like JS.
 - they are assigned to variables
-	``` go
-	x := func (a, b int) int {
-		return a+b
-	}
-	```
-	-
+``` go
+x := func (a, b int) int {
+	return a+b
+}
+```
 ### Methods
 - Go does not have classes but you can still define methods on types. Methods are attached to a type using a special argument called the Receiver argument.
 - A receiver argument can be a value or can be a pointer. 
@@ -263,10 +262,136 @@ func main () {
 	var a IAbs
 	b, c := Vertex {-2, -3 }, MyFloat(-58.548)
 	a = &b
-	fmt.Println(a.Abs())
+	AbsDescribe(a)
 	a = c
-	fmt.Println(a.Abs())
-	// a = b
-	// fmt.Println(a.Abs())
+	AbsDescribe(a)
+}
+
+func AbsDescribe (i IAbs) {
+	fmt.Printf("Abs Describe: (%v, %T)\n", i.Abs(), i)
+}
+```
+
+### Type Assertions / Empty Interface
+- the empty interface is a special interface implemented by all types. because it is an empty interface it can be used as a generic-like parameter.
+- casting the empty interface to another type is done using the `var f, ok := x.(*type*)` syntax.
+	- f is the value of type T if the cast was successful
+	- ok is a boolean indicating if the cast was successful
+- if the ok is omitted, and the cast fails, the system panics (throws an error)
+	- similar to the <T>.tryParse(T val, out bool success) in .NET
+
+``` go
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+type IAbs interface {
+	Abs() float64
+}
+
+type Vertex struct { 
+	X, Y float64 
+}
+
+type MyFloat float64
+
+func (v *Vertex) Abs () float64 {
+	return math.Sqrt(v.X*v.X + v.Y*v.Y)
+}
+
+func (f MyFloat) Abs() float64 {
+	if (f >= 0) {
+		return float64(f)
+	}
+
+	return float64(-f)
+}
+
+func main () {
+	var a IAbs
+	b, c := Vertex {-2, -3 }, MyFloat(-58.548)
+	a = &b
+	EmptyDescribe(a)
+	a = c
+	EmptyDescribe(a)
+
+	var i interface {} = "string"
+	s := i.(string)
+	fmt.Printf("%s\n", s)
+
+	s, ok := i.(string)
+	fmt.Printf("Ok: %t, val: %s\n", ok, s)
+
+	f, ok := i.(float64)
+	fmt.Printf("Ok: %t, val: %f\n", ok, f)
+}
+
+func EmptyDescribe (i interface{}) {
+	// can't call Abs here on i
+	fmt.Printf("Empty Describe: (%v, %T)\n", i, i)
+}
+```
+- type switches are special switch statements that switch over a type rather than a value. they are used against the empty interface.
+```go
+package main
+
+import "fmt"
+
+func do(i interface{}) {
+	switch v := i.(type) {
+	case int:
+		fmt.Printf("Twice %v is %v\n", v, v*2)
+	case string:
+		fmt.Printf("%q is %v bytes long\n", v, len(v))
+	default:
+		fmt.Printf("I don't know about type %T!\n", v)
+	}
+}
+
+func main() {
+	do(21)
+	do("hello")
+	do(true)
+}
+```
+
+### Errors
+- errors are simply types that have implemented the error interface. the error interface is defined as the following:
+```go
+type error interface {
+    Error() string
+}
+```
+
+therefore, to handle errors, add a return parameter of the error interface type and create a new instance of a custom error object when an error occurs and return it.
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+type ErrNegativeInt int
+
+func (e ErrNegativeInt) Error() string {
+	return fmt.Sprintf("%v was negative.", int(e))
+}
+
+func do (v int) (int, error) {
+	if v < 0 {
+		return 0, ErrNegativeInt(v)
+	}
+
+	return v+1, nil
+}
+
+func main(){
+	fmt.Println(do (10))
+	fmt.Println(do (-1))
+	fmt.Println(do (-2))
 }
 ```
