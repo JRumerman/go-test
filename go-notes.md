@@ -75,10 +75,6 @@ func fn (a int) (int) {
 }
 ```
 
-### concurrency
-- defer statements defers the execution of a function until the surrounding function returns. it acts as a stack so its lifo
-
-
 ### looping
 - no parenthese around for loops or if statements
 - manadatory brackets {}
@@ -395,3 +391,126 @@ func main(){
 	fmt.Println(do (-2))
 }
 ```
+
+### Readers
+- readers are another interface. they are used to populate a byte array from the underlying data.
+- they are used a lot by the internal packages
+``` go
+package main
+
+type MyReader struct{}
+
+func (m MyReader) Read(b []byte) (int, error) {
+	l := len(b)
+	for i := 0; i < l; i++ {
+		b[i] = byte('A')
+	}
+
+	return l, nil
+}
+
+func main() {
+	reader.Validate(MyReader{})
+}
+```
+- another reader example
+``` go
+package main
+
+import (
+	"io"
+	"os"
+	"strings"
+)
+
+type rot13Reader struct {
+	r io.Reader
+}
+
+func translate(v byte) byte {
+	var diff int8
+	if (v > 64 && v < 79) || (v > 96 && v < 109) {
+		diff = 13
+	}
+
+	if (v > 78 && v < 90) || (v > 108 && v < 123) {
+		diff = -13
+	}
+
+	return byte(int8(v) + diff)
+}
+
+func (a rot13Reader) Read(c []byte) (int, error) {
+	n, err := a.r.Read(c)
+
+	for i, v := range c {
+		c[i] = translate(v)
+	}
+
+	return n, err
+}
+
+func main() {
+	s := strings.NewReader("Lbh penpxrq gur pbqr!")
+	r := rot13Reader{s}
+	io.Copy(os.Stdout, &r)
+}
+```
+
+### concurrency
+- defer statements defers the execution of a function until the surrounding function returns. it acts as a stack so its lifo
+
+#### goroutines
+- lightweight thread managed by go.
+- they are simply functions that are called with the `go` keyword prefix
+- the calling stuff is evaluated before the method begins; within the current thread (e.g. the method and the variables)
+``` go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func write(phrase string) {
+	for i:=0; i<5; i++ {
+		fmt.Println(phrase);	
+	}
+} 
+
+func main() {
+	go write("world")
+	write("hello")
+	time.Sleep(2000)
+}
+```
+
+#### channels
+- a way of synchronizing data across multiple threads.
+- waiting for data before continuing.
+``` go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func product(values []int, c chan int) {
+	p := 1
+	for _, v := range values {
+		p *= v
+	}
+
+	c <- p
+}
+
+func main() {
+	c := make(chan int)
+	go product([]int{1, 2, 3, 4, 5, 6, 7, 8}, c)
+	fmt.Println(<-c)
+}
+```
+
+- channels can be buffered. buffering a channel means that sends to the channel will block if the buffer is full and receives will block if the buffer is empty.
+
